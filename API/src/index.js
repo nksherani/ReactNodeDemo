@@ -7,9 +7,11 @@ require('./passport');
 
 
 //configure express
-app.use(function(req, res, next) {
+var cors = require('cors');
+app.use(cors({credentials: true, origin: true}));
+app.all(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
   });
 app.use(bodyParser.json());
@@ -26,6 +28,10 @@ app.use('/auth', auth);
 const user = require('./routes/user');
 app.use('/user', passport.authenticate('jwt', { session: false }), user);
 
+//Students.js
+const student = require('./StudentManagement/Students');
+ app.use('/Students', passport.authenticate('jwt', { session: false }), student);
+//app.use('/Students', student);
 
 //add api listener from signup page
 var signup = require('./UserManagement/SignUp');
