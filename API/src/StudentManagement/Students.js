@@ -4,11 +4,11 @@ var app = express();
 
 app.get('/',(req,response)=>{
 
-    querydb.QueryDb('select * from Student').then(function (data) {
-        console.log('api hit');
+    querydb.QueryDb('exec Getstudents').then(function (data) {
         //console.log(data);
-        var firstNames = data['recordset'].map((x)=>x.FirstName);
-        response.send(firstNames);
+        var Students = data['recordset'];
+        //console.log(Students);
+        response.send(Students);
 
     }).catch(function (ex) {
         console.log(ex);

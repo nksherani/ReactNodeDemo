@@ -4,14 +4,14 @@ import '@progress/kendo-theme-default/dist/all.css';
 import '@progress/kendo-ui';
 import Header from './BaseUI/Header';
 import NavigationBar from './BaseUI/NavigationBar';
-import Grid from './Students/Grid';
+import StudentsGrid from './Students/StudentsGrid';
 
 function App() {
   return (
       <div className="App">
          <Header/> 
          <NavigationBar/> 
-         <Grid/>
+         <StudentsGrid/>
     </div>
   );
 }
