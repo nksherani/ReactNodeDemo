@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { process } from '@progress/kendo-data-query';
+import { process, filterBy } from '@progress/kendo-data-query';
 import { Grid, GridColumn } from '@progress/kendo-react-grid';
 // import { DropDownList } from '@progress/kendo-react-dropdowns';
 // import { GridPDFExport } from '@progress/kendo-react-pdf';
@@ -27,9 +27,12 @@ class StudentsGrid extends React.Component
             ]
             
         };
+       
         this.state = {
+            completeData:[],
             students: [],
             dataState: dataState,
+            filter: {}
         };
     }
     componentDidMount() {
@@ -38,14 +41,15 @@ class StudentsGrid extends React.Component
         .then((data) => {
             //console.log(process( data, this.state.dataState) );
             data = data.map((x)=>this.ProcessData(x));
-          this.setState({ students: process( data, this.state.dataState).data })
-          //console.log(this.state.students)
+            this.setState({ completeData: data })
+            this.setState({ students: process( data, this.state.dataState).data })
+            //console.log(this.state.students)
          });
       }
       dataStateChange = (event) => {
           console.log(event.data);
         this.setState({
-            students: process(this.state.students, event.data),
+            students: process(this.state.completeData, event.data),
             dataState: event.data
         });
     }
@@ -64,19 +68,27 @@ class StudentsGrid extends React.Component
         }
         return newdata;
     }
+    filterChange=(e)=>{
+        console.log(e);
+        this.setState({
+            students : filterBy(this.state.completeData, e.filter),
+            filter: e.filter
+        });
+    }
     render=()=>{
         return (
             <div >
                 <Grid           style={{ height: '700px' }}
                                 sortable
                                 filterable
+                                filter = {this.state.filter}
                                 groupable
                                 reorderable
                                 pageable={{ buttonCount: 4, pageSizes: true }}
-
                                  data={this.state.students}
                                 {...this.state.dataState}
                                 onDataStateChange={this.dataStateChange}
+                                onFilterChange={this.filterChange}
                             >
                                 
                                 <GridColumn field="GRNo" width="200px" filter="numeric" />
