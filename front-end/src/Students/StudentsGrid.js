@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { process, filterBy } from '@progress/kendo-data-query';
+import { process, filterBy, orderBy } from '@progress/kendo-data-query';
 import { Grid, GridColumn } from '@progress/kendo-react-grid';
 // import { DropDownList } from '@progress/kendo-react-dropdowns';
 // import { GridPDFExport } from '@progress/kendo-react-pdf';
@@ -21,18 +21,17 @@ class StudentsGrid extends React.Component
         super(props);
         const dataState = {
             skip: 0,
-            take: 20,
-            sort: [
-                { field: 'GRNo', dir: 'asc' }
-            ]
-            
+            take: 20
         };
        
         this.state = {
             completeData:[],
             students: [],
             dataState: dataState,
-            filter: {}
+            filter: {},
+            sort: [
+                { field: 'GRNo', dir: 'asc' }
+            ]
         };
     }
     componentDidMount() {
@@ -42,7 +41,7 @@ class StudentsGrid extends React.Component
             //console.log(process( data, this.state.dataState) );
             data = data.map((x)=>this.ProcessData(x));
             this.setState({ completeData: data })
-            this.setState({ students: process( data, this.state.dataState).data })
+            this.setState({ students: process( orderBy(data,this.state.sort), this.state.dataState).data })
             //console.log(this.state.students)
          });
       }
@@ -75,11 +74,20 @@ class StudentsGrid extends React.Component
             filter: e.filter
         });
     }
+    sortChange=(e)=>{
+        console.log(e);
+        this.setState({
+            students : process(orderBy(this.state.completeData, e.sort),this.state.dataState),
+            sort: e.sort
+        });
+    }
     render=()=>{
         return (
             <div >
                 <Grid           style={{ height: '700px' }}
                                 sortable
+                                sort={this.state.sort}
+                                onSortChange = {this.sortChange}
                                 filterable
                                 filter = {this.state.filter}
                                 groupable
