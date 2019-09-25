@@ -41,7 +41,7 @@ class StudentsGrid extends React.Component
             //console.log(process( data, this.state.dataState) );
             data = data.map((x)=>this.ProcessData(x));
             this.setState({ completeData: data })
-            this.setState({ students: process( orderBy(data,this.state.sort), this.state.dataState).data })
+            this.setState({ students: process( orderBy(data,this.state.sort), this.state.dataState) })
             //console.log(this.state.students)
          });
       }
@@ -70,7 +70,7 @@ class StudentsGrid extends React.Component
     filterChange=(e)=>{
         console.log(e);
         this.setState({
-            students : filterBy(this.state.completeData, e.filter),
+            students : process(filterBy(this.state.completeData, e.filter),this.state.dataState),
             filter: e.filter
         });
     }
