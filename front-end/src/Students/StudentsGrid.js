@@ -2,11 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import { process } from '@progress/kendo-data-query';
 import { Grid, GridColumn } from '@progress/kendo-react-grid';
-import { DropDownList } from '@progress/kendo-react-dropdowns';
-import { GridPDFExport } from '@progress/kendo-react-pdf';
-import { ExcelExport } from '@progress/kendo-react-excel-export';
-import { IntlProvider, load, LocalizationProvider, loadMessages } from '@progress/kendo-react-intl';
-import Stud from '../Students/Stud'
+// import { DropDownList } from '@progress/kendo-react-dropdowns';
+// import { GridPDFExport } from '@progress/kendo-react-pdf';
+// import { ExcelExport } from '@progress/kendo-react-excel-export';
+// import { IntlProvider, load, LocalizationProvider, loadMessages } from '@progress/kendo-react-intl';
+// import Stud from '../Students/Stud'
 const API_URL = 'http://localhost:5000';
 
 var config = {
@@ -23,7 +23,7 @@ class StudentsGrid extends React.Component
             skip: 0,
             take: 20,
             sort: [
-                { field: 'StudentId', dir: 'desc' }
+                { field: 'GRNo', dir: 'asc' }
             ]
             
         };
@@ -32,40 +32,59 @@ class StudentsGrid extends React.Component
             dataState: dataState,
         };
     }
-    componentWillMount() {
+    componentDidMount() {
         const url = `${API_URL}/Students/`;
         axios.get(url,config).then(response => response.data)
         .then((data) => {
-            console.log(process( data, this.state.dataState) );
+            //console.log(process( data, this.state.dataState) );
+            data = data.map((x)=>this.ProcessData(x));
           this.setState({ students: process( data, this.state.dataState).data })
           //console.log(this.state.students)
          });
       }
       dataStateChange = (event) => {
+          console.log(event.data);
         this.setState({
-            dataResult: process(this.state.students, event.data),
+            students: process(this.state.students, event.data),
             dataState: event.data
         });
+    }
+    ProcessData = (data)=>{
+        var newdata = {
+            "GRNo":parseInt(data.GRNo),
+            "StudentName": data.StudentName,
+            "FatherName":data.FatherName,
+            "MotherName":data.MotherName,
+            "ClassName":data.ClassName,
+            "Section":data.Section,
+            "RollNo":parseInt(data.RollNo),
+            "MonthlyFee":parseInt(data.MonthlyFee),
+            "AnnualFee":parseInt(data.AnnualFee),
+            "AdmissionFee":parseInt(data.AdmissionFee)
+        }
+        return newdata;
     }
     render=()=>{
         return (
             <div >
                 <Grid           style={{ height: '700px' }}
                                 sortable
+                                filterable
+                                groupable
                                 reorderable
                                 pageable={{ buttonCount: 4, pageSizes: true }}
 
                                  data={this.state.students}
-                                //data={Stud}
+                                {...this.state.dataState}
+                                onDataStateChange={this.dataStateChange}
                             >
                                 
-                                <GridColumn field="StudentId" title="ID" width="200px" />
-                                <GridColumn field="StudentName" width="300px" />
+                                <GridColumn field="GRNo" width="200px" filter="numeric" />
+                                <GridColumn field="StudentName" filter="text" width="300px" />
                                 <GridColumn field="FatherName" width="280px" />
-                                <GridColumn field="MotherName" width="200px" />
                                 <GridColumn field="ClassName" width="300px" />
                                 <GridColumn field="Section" width="200px" />
-                                <GridColumn field="GRNo"  width="90px" />
+                                <GridColumn field="RollNo"  width="90px" />
                             </Grid>
             </div>
         )
