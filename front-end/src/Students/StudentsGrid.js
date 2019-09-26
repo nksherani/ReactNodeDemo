@@ -45,11 +45,12 @@ class StudentsGrid extends React.Component
             //console.log(this.state.students)
          });
       }
-      dataStateChange = (event) => {
-          console.log(event.data);
+      pageChange = (event) => {
+          console.log('dataStateChange');
+          console.log(event.page);
         this.setState({
-            students: process(this.state.completeData, event.data),
-            dataState: event.data
+            students: process(this.state.completeData, event.page),
+            dataState: event.page
         });
     }
     ProcessData = (data)=>{
@@ -92,10 +93,13 @@ class StudentsGrid extends React.Component
                                 filter = {this.state.filter}
                                 groupable
                                 reorderable
-                                pageable={{ buttonCount: 4, pageSizes: true }}
-                                 data={this.state.students}
-                                {...this.state.dataState}
-                                onDataStateChange={this.dataStateChange}
+                                // pageable={{ buttonCount: 4, pageSizes: true }}
+                                total={this.state.completeData.length}
+                                pageable={true}
+                                data={this.state.students}
+                                skip = {this.state.dataState.skip}
+                                take = {this.state.dataState.take}
+                                onPageChange={this.pageChange}
                                 onFilterChange={this.filterChange}
                             >
                                 
