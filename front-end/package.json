@@ -18,7 +18,7 @@
     "@progress/kendo-theme-default": "^4.3.2",
     "@progress/kendo-theme-material": "^3.2.0",
     "@progress/kendo-ui": "^2019.2.910",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
     "jquery": "^3.4.1",
     "mdbreact": "^4.20.0",
